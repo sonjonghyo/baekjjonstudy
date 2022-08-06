@@ -8,8 +8,7 @@ public class Main {
 		int A = Integer.parseInt(st.nextToken()); //문자열을 읽어서 String을 int형으로 변환해준다.
 		int B = Integer.parseInt(st.nextToken());
 		int V = Integer.parseInt(st.nextToken());
-		int date = 0;
-		date = (V-B)/(A-B);
+		int date = (V-B)/(A-B);
 		if(((V-B)%(A-B))!=0) {
 			date++;
 		}

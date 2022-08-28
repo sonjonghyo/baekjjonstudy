@@ -81,10 +81,7 @@ public class Solution {
 		int resultx = px+qx;
 		int resulty = py+qy;
 		int leftnum = resulty+(resultx-1); //y축 처음 위치.
-		int rightnum = 0;
-		for(int i = 1; i <= leftnum; i++) {
-			rightnum += i;
-		}
+		int rightnum = arr[leftnum-1];
 		result = rightnum - (leftnum-resultx);
 		sb.append(result);
 	}

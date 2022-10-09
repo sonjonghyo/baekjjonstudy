@@ -21,7 +21,7 @@ public class Solution {
 				snack[i] = sc.nextInt();
 			}
 			
-			dfs(0,0);
+			dfs(0,0,0);
 			sb.append(max);
 			if(tc!=T)
 				sb.append("\n");
@@ -31,13 +31,8 @@ public class Solution {
 		sc.close();
 	}
 
-	private static void dfs(int idx, int cnt) {
+	private static void dfs(int idx, int cnt, int sum) {
 		if(cnt==2) {
-			int sum = 0;
-			for(int i = 0; i<N; i++) {
-				if(visited[i])
-					sum += snack[i];
-			}
 			if(max < sum && sum <= M)
 				max = sum;
 			return;
@@ -46,7 +41,7 @@ public class Solution {
 		for(int i = idx; i<N; i++) {
 			if(!visited[i]) {
 				visited[i] = true;
-				dfs(i+1, cnt+1);
+				dfs(i+1, cnt+1, sum + snack[i]);
 				visited[i] = false;
 			}
 		}	

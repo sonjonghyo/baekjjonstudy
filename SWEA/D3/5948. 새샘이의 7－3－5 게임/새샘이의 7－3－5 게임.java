@@ -44,7 +44,7 @@ public class Solution {
 			return;
 		}
 		
-		for(int i = 0; i<7; i++) {
+		for(int i = idx; i<7; i++) {
 			if(!visited[i]) {			
 				visited[i] = true;
 				rsum[cnt] = arr[i];

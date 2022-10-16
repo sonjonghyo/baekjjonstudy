@@ -1,11 +1,11 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
 	static int N,M;
 	static int tree[];
+	static int max = 0;
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
@@ -17,14 +17,15 @@ public class Main {
 		st = new StringTokenizer(br.readLine());
 		for(int i = 0; i<N; i++) {
 			tree[i] = Integer.parseInt(st.nextToken());
+			if(tree[i] > max)
+				max = tree[i];
 		}
-		Arrays.sort(tree);
 		result = binarysearch();
 		System.out.println(result);
 	}
 	private static int binarysearch() {
 		int left = 0;
-		int right = tree[N-1];
+		int right = max;
 		while(left <= right) {
 			int mid = (left+right)/2;
 			long sum = 0;

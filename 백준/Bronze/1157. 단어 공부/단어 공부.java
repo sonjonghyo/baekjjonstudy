@@ -1,37 +1,33 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.util.Scanner;
 
 public class Main {
-	public static void main(String[] args) throws Exception{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String S = br.readLine();
-		String big = S.toUpperCase(); //모든 문자를 대문자로 만들어준다.
-		int arr[] = new int[26]; //알파벳 A~Z까지 0~25번에 담음.
-		for(int i = 0; i<big.length(); i++) {
-			int num = big.charAt(i)-65; //대문자A의 아스키코드값이 65이므로 0~25의 수가담기게 된다. 
-			arr[num]++; //A~Z까지 각 빈도수 체크.
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String word = sc.next(); //알파벳 문자를 입력으로 받아줌.
+		int arr[] = new int[26]; //알파벳의 개수 a~z까지 개수를 담아줄 배열을 만들어준다.
+		word = word.toLowerCase(); //word의 모든 단어를 소문자로 만들어주는 함수를 
+		for(int i = 0; i<word.length(); i++) { //word의 길이만큼 for문을 돌려주겠다.
+			arr[(word.charAt(i)-'a')]++; //배열에 word안의 i번째 단어에 'a'를 빼주어 아스키코드값 0부터 시작하게 만들어준다. 
 		}
-		int max = 0;
-		int maxidx = 0;
-		boolean check = true;
-		for(int i = 0; i<arr.length; i++) {
-			if(max<arr[i]) { //최대 빈도수 구하기.
-				max=arr[i];
-				maxidx=i; 
+		int max = 0; //최대값을 설정해줌.
+		int idx = 0; //최대값의 인덱스를 찾아줌.
+		int cnt = 0; //최대값의 개수.
+		for(int i = 0; i<26; i++) { //알파벳의 개수만큼 for문을 돌려 최대값을 찾아줌.
+			if(arr[i] > max) { //만약 현재의 최대값보다 arr[i]의 값이 더 크다면(알파벳이 더 많이 나왔다면)
+				max = arr[i]; //max에 arr[i]를 넣어줌.
+				idx = i; //몇번째인지 idx에 넣어준다.
 			}
 		}
-		for(int i = 0; i<arr.length; i++) {
-			if(max==arr[i]) { //만약 최대빈도의 값이 나왔다면? 
-				if(maxidx != i) { //최대빈도가있는 maxidx랑 현재 i를 비교해 만약 다르다면 똑같은 빈도가 있다는 뜻이므로. 
-					System.out.println("?"); //?를 출력해주고
-					check = false; //check 변수를 false로 만들어주고
-					break; //for문을 끝내준다.
-				}
-			}
+		for(int i = 0; i<26; i++) { //최대값과 같은 것의 개수가 몇개인지 확인.
+			if(arr[i] == max) //값이 max와 같다면
+				cnt++; //cnt를 추가시켜줌.
 		}
-		if(check) { //위에서 빈도수가 같은것이있었다면 false라 동작을안하지만 같은것이 없고 유일이었으면 동작.
-			char result = (char)(65+maxidx); //대문제 A의 아스키코드가 65이므로 65+그 문자에 해당하는 maxidx를 더해준다.
-			System.out.println(result);
+		if(cnt==1) { //최대값이 1개라면
+			char result = (char)(65+idx); //대문자A의 아스키코드값은 65이므로 65+idx를 해주어 소문자로 저장시켜줌.
+			System.out.println(result); //결과 출력
+		}else { //최대값이 1개가아닌 여러개라면
+			System.out.println("?"); //?를 출력하게 해준다.
 		}
+		sc.close();
 	}
 }

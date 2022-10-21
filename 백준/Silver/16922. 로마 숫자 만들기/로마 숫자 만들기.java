@@ -26,5 +26,5 @@ public class Main {
 		for(int a = idx; a<4; a++) { //idx번째 부터 총 1,5,10,50있는거 확인.
 			dfs(dep+1, a, realsum + num[a]); //깊이는 하나 내려가고 idx는 a를 주고 합은 realsum에 num의 a번째를 더해줌.
 		}
-	}	
+	}
 }

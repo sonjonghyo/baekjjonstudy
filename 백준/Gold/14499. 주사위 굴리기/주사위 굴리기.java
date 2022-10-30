@@ -26,7 +26,7 @@ public class Main {
 		st = new StringTokenizer(br.readLine());
 		for(int i = 0; i<K; i++) { //명령횟수 만큼 반복.
 			int command = Integer.parseInt(st.nextToken());
-			switch(command) {
+			switch(command) { //switch문을 사용하여 위치에 맞는 case를 동작시킨다.
 			case 1:
 				rotate1(); //동쪽으로 갈때
 				break;
@@ -52,20 +52,15 @@ public class Main {
 			int up = dice[1]; //윗면에는 전의 왼쪽면이
 			int left = dice[5]; //왼쪽면에는 전의 밑면이
 			int right = dice[0]; //오른쪽면에는 전의 윗면이.
-			int down = dice[2]; //밑면에는 전의 오른쪽면이
+			int down = dice[2]; //밑면에는 전의 오른쪽면이	
 			
+			//그대로 저장.
 			dice[0] = up;
 			dice[1] = left;
 			dice[2] = right;
 			dice[5] = down;
 			
-			if(map[r][c]==0) { //이동한 부분의 지도에 쓰여 있는수가 0이라면
-				map[r][c] = dice[5]; //주사위 밑면에 쓰여있는것이 맵에 복사가됌.
-				
-			}else { //이동한 부분의 지도에 쓰여있는수가 0이 아니라면?
-				dice[5] = map[r][c]; //칸에 쓰여있는수가 주사위에 복사가됌.
-				map[r][c] = 0; //그러고 지도에 쓰여있는 수는 0으로 바뀜.
-			}
+			mapcheck(r,c); //주사위가 다음 위치로 갈때 주사위밑면, 지도아래 뭐있는지 확인.
 			sb.append(dice[0]); //윗면에 있는 수 저장.
 			sb.append("\n"); //개행문자 추가.
 		}else { //맵 밖으로 갔다면
@@ -87,13 +82,7 @@ public class Main {
 			dice[2] = right;
 			dice[5] = down;
 			
-			if(map[r][c]==0) { //이동한 부분의 지도에 쓰여 있는수가 0이라면
-				map[r][c] = dice[5]; //주사위 밑면에 쓰여있는것이 맵에 복사가됌.
-				
-			}else { //이동한 부분의 지도에 쓰여있는수가 0이 아니라면?
-				dice[5] = map[r][c]; //칸에 쓰여있는수가 주사위에 복사가됌.
-				map[r][c] = 0; //그러고 지도에 쓰여있는 수는 0으로 바뀜.
-			}
+			mapcheck(r,c);
 			sb.append(dice[0]); //윗면에 있는 수 저장.
 			sb.append("\n"); //개행문자 추가.
 		}else { //맵 밖으로 갔다면
@@ -114,13 +103,7 @@ public class Main {
 			dice[3] = front;
 			dice[4] = back;
 			dice[5] = down;
-			if(map[r][c]==0) { //이동한 부분의 지도에 쓰여 있는수가 0이라면
-				map[r][c] = dice[5]; //주사위 밑면에 쓰여있는것이 맵에 복사가됌.
-				
-			}else { //이동한 부분의 지도에 쓰여있는수가 0이 아니라면?
-				dice[5] = map[r][c]; //칸에 쓰여있는수가 주사위에 복사가됌.
-				map[r][c] = 0; //그러고 지도에 쓰여있는 수는 0으로 바뀜.
-			}
+			mapcheck(r,c);
 			sb.append(dice[0]); //윗면에 있는 수 저장.
 			sb.append("\n"); //개행문자 추가.
 		}else { //동작 안한다면?
@@ -143,13 +126,8 @@ public class Main {
 			dice[3] = front;
 			dice[4] = back;
 			dice[5] = down;
-			if(map[r][c]==0) { //이동한 부분의 지도에 쓰여 있는수가 0이라면
-				map[r][c] = dice[5]; //주사위 밑면에 쓰여있는것이 맵에 복사가됌.
-				
-			}else { //이동한 부분의 지도에 쓰여있는수가 0이 아니라면?
-				dice[5] = map[r][c]; //칸에 쓰여있는수가 주사위에 복사가됌.
-				map[r][c] = 0; //그러고 지도에 쓰여있는 수는 0으로 바뀜.
-			}
+			
+			mapcheck(r,c); //이동한 부분의 지도에 쓰여있는 수 체크.
 			sb.append(dice[0]); //윗면에 있는 수 저장.
 			sb.append("\n"); //개행문자 추가.
 		}else { //범위 밖이라면 이동하면 안되므로 원래대로 돌려놓고
@@ -159,7 +137,17 @@ public class Main {
 			
 	}
 	
-	private static boolean in(int r, int c) {
+	private static void mapcheck(int r, int c) {
+		if(map[r][c]==0) { //이동한 부분의 지도에 쓰여 있는수가 0이라면
+			map[r][c] = dice[5]; //주사위 밑면에 쓰여있는것이 맵에 복사가됌.
+			
+		}else { //이동한 부분의 지도에 쓰여있는수가 0이 아니라면?
+			dice[5] = map[r][c]; //칸에 쓰여있는수가 주사위에 복사가됌.
+			map[r][c] = 0; //그러고 지도에 쓰여있는 수는 0으로 바뀜.
+		}
+		
+	}
+	private static boolean in(int r, int c) { //내부에서 동작하는지 확인시켜주는 함수.
 		return (r >= 0 && r < N && c >= 0 && c < M);
 	}
 }

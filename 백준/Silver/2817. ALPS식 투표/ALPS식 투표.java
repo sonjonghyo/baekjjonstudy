@@ -60,19 +60,19 @@ public class Main {
 					if(score[j][k] == 0) { //0이면 다음
 						continue;
 					}else {
-						if(score[j][k] > max) {
-							max = score[j][k];
-							maxj = j;
+						if(score[j][k] > max) { //만약 현재 스코어의 값이 max보다 크다면
+							max = score[j][k]; //max값을 갱신해주며
+							maxj = j; //현재의 j, k값을 maxj, k변수에 저장해 줍니다.
 							maxk = k;
 							break;
-						}else {
-							break;
+						}else { //만약 작다면?
+							break;  //어짜피 뒤에것도 작으니 볼 필요가 없다. k에 대한 for문을 끝내줍니다.
 						}
 					}
 				}
 			}
-			score[maxj][maxk] = 0;
-			chip[maxj]++;
+			score[maxj][maxk] = 0; //가장 큰 값의 score를 초기화 시켜주고
+			chip[maxj]++; //해당하는 j값의 chip을 1 증가시켜줍니다.
 		}
 		for(int i = 0; i < cnt; i++) {
 			sb.append(staffName[i]).append(" ").append(chip[i]);

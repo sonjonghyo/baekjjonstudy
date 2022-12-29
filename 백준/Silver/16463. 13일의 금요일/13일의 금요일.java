@@ -10,14 +10,14 @@ public class Main {
 		int month = 0;
 		for(int year = 2019; year <= N; year++) { //년수 계산.
 			for(int i = 1; i <= 12; i++) { //1월부터 12월 계산.
-				if(i == 1) {
-					month = 12;
-				}else {
-					month = i-1;
+				if(i == 1) { //만약 1월이라면?
+					month = 12; //전의 달을 구해야하므로 12월로 바꿔주고
+				}else { //그 외에는
+					month = i-1; //전부 -1을 해준 값을 month에 저장해줍니다.
 				}
-				if(year == 2019 && i == 1)
+				if(year == 2019 && i == 1) //처음은 이미 계산해놨으므로 continue해줍니다.
 					continue;
-				switch(month) {
+				switch(month) { //month로 switch해서 구분해줍니다.
 				case 1:
 				case 3:
 				case 5:
@@ -26,10 +26,10 @@ public class Main {
 				case 10:
 				case 12:
 					day += 3; //요일 3개가 지나므로 3개를 더해줌.
-					if(day > 6)
-						day -= 7;
-					if(day == 4)
-						friday++;
+					if(day > 6) //만약 6을 초과한다면? 더 없으므로.
+						day -= 7; //7일을 빼줍니다.
+					if(day == 4) //만약 이때의 요일이 금요일이라면?
+						friday++; //friday를 추가해줍니다.
 					break;
 				case 4:
 				case 6:

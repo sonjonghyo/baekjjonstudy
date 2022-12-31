@@ -5,8 +5,6 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String N = br.readLine(); //소수인지 먼저 확인.
-		checktfs(N); //3,4,7이 있는지 확인해주는 함수.
-		checksosu(N); //소수인지 확인해주는 함수.
 		boolean check = false;
 		if(checktfs(N) && checksosu(N)) { //3,4,7이없고 소수라면?
 			String revN = "";
@@ -21,7 +19,7 @@ public class Main {
 			System.out.println("no"); //no를 출력해줍니다.
 		}
 	}
-	private static String reversenum(String N) {
+	private static String reversenum(String N) { //수를 뒤집어주는 함수.
 		String rev = ""; //바뀔 수를 담아줄 rev
 		for(int i = N.length()-1; i >= 0 ; i--) {
 			char num = N.charAt(i); //거꾸로 담기
@@ -43,7 +41,7 @@ public class Main {
 		}
 		return true; //없을경우 true를 반환해줍니다.
 	}
-	private static boolean checksosu(String N) {
+	private static boolean checksosu(String N) { //소수인지 확인.
 		long num = Long.parseLong(N); //먼저 범위가 최대 10의 16승까지이므로 long으로 선언해줍니다.
 		if(num == 1) return false; //1인경우는 소수가 아니므로 true반환
 		for(long i = 2; i <= Math.sqrt(num); i++) {

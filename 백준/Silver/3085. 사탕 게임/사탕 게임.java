@@ -86,14 +86,14 @@ public class Main {
 							maxSum = cnt; //그것으로 변경해줍니다.
 						cnt = 1; //그러고 cnt는 초기화.
 					}
-					if(maxSum < cnt) //cnt가 가장 긴것보다 크다면
-						maxSum = cnt; //그것으로 변경해줍니다.
 				}
 				if(cnt == N) { //만약 N까지 증가했다면?
 					finish = true;
 					return; //함수 끝내주기. (이것보다 긴것이 없으므로.)
 				}
 			}
+			if(maxSum < cnt) //cnt가 가장 긴것보다 크다면
+				maxSum = cnt; //그것으로 변경해줍니다.
 		}
 		
 		for(int i = 0; i < N; i++) { //세로계산
@@ -110,14 +110,14 @@ public class Main {
 							maxSum = cnt; //그것으로 변경해줍니다.
 						cnt = 1; //그러고 cnt는 초기화.
 					}
-					if(maxSum < cnt) //cnt가 가장 긴것보다 크다면
-						maxSum = cnt; //그것으로 변경해줍니다.
 				}
 				if(cnt == N) { //만약 N까지 증가했다면?
 					finish = true;
 					return; //함수 끝내주기. (이것보다 긴것이 없으므로.)
 				}
 			}
+			if(maxSum < cnt) //cnt가 가장 긴것보다 크다면
+				maxSum = cnt; //그것으로 변경해줍니다.
 		}
 	}
 	private static void changeRowCandy(int i, int j) {

@@ -1,86 +1,115 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-	static class Node {
-		int x,y,z;
-		int minute;
-		public Node(int x, int y, int z, int minute) {
-			this.x = x;
-			this.y = y;
-			this.z = z;
-			this.minute = minute;
-		}
-	}
-	static int L, R, C;
-	static char building[][][];
-	static boolean visited[][][];
-	static Queue<Node> sangbum;
-	static int result = 0;
-	static int drc[][] = {{1,0,0},{-1,0,0}, {0,1,0}, {0,-1,0}, {0,0,1}, {0,0,-1}};
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		StringBuilder sb = new StringBuilder();
-		while(true) {			
-			st = new StringTokenizer(br.readLine());
-			L = Integer.parseInt(st.nextToken());
-			R = Integer.parseInt(st.nextToken());
-			C = Integer.parseInt(st.nextToken());
-			if(L == 0 && R == 0 && C == 0) {
-				break; //셋다 0이면 while문 끝내주기
-			}
-			result = 0;
-			String floor = "";
-			building = new char[L][R][C];
-			visited = new boolean[L][R][C];
-			sangbum = new LinkedList<>();
-			for(int i = 0; i < L; i++) {
-				for(int j = 0; j < R; j++) {
-					floor = br.readLine();
-					for(int k = 0; k < C; k++) {
-						building[i][j][k] = floor.charAt(k);
-						if(floor.charAt(k) == 'S') {
-							visited[i][j][k] = true;
-							sangbum.add(new Node(i, j, k, 0)); //처음 시작 부분을 추가해줍니다.
-						}
-					}
-				}
-				br.readLine();
-			}
-			start(); //끝지점 찾아가기 스타트.
-			if(result == 0) { //결과를 못찾았으면?
-				sb.append("Trapped!").append("\n");
-			}else {
-				sb.append("Escaped in ").append(result).append(" minute(s).").append("\n");
-			}
-		}
-		System.out.println(sb);
-	}
-	private static void start() {
-		while(!sangbum.isEmpty()) { //비어있지 않을때까지 돌리기.
-			Node n = sangbum.poll();			
-			for(int d = 0; d < 6; d++) {
-				int nx = n.x + drc[d][0];
-				int ny = n.y + drc[d][1];
-				int nz = n.z + drc[d][2];
-				if(outOfRange(nx,ny,nz)) { //배열범위 안이라면?
-					if(building[nx][ny][nz] == 'E') { //도착했으면 끝내주기.
-						result = n.minute+1;
-						return;
-					}else if(!visited[nx][ny][nz] && building[nx][ny][nz] == '.') { //이동가능한 공간이라면?
-						visited[nx][ny][nz] = true;
-						sangbum.add((new Node(nx,ny,nz, n.minute+1)));
-					}
-				}
-			}
-		}
-		
-	}
-	private static boolean outOfRange(int nx, int ny, int nz) {
-		return (nx >= 0 && nx < L && ny >= 0 && ny < R && nz >= 0 && nz < C);
-	}
+    static int l, r, c;
+    static char[][][] building;
+    //동서남북상하
+    //동서남북은 층 안바뀌고, 상하만 층이 바뀜.
+    static int moveX[] = {0,0,0,0,1,-1};
+    static int moveR[] = {0,0,1,-1,0,0};
+    static int moveC[] = {1,-1,0,0,0,0};
+    static boolean visited[][][];
+    static class Node{
+        int x;
+        int y;
+        int z;
+        int canEscape;
+        Node(int x, int y, int z, int canEscape){
+        	//이 부분 반대로 쓰셨고 z y z로 되어있네요~
+//            z = this.x;
+//            y = this.y;
+//            z = this.z;
+//        	canEscape = this.canEscape;
+        	this.x = x;
+        	this.y = y;
+        	this.z = z;
+        	this.canEscape = canEscape;
+        }
+    }
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+
+        while(true) {
+            Queue<Node> queue = new LinkedList<>();
+            st = new StringTokenizer(br.readLine());
+            l = Integer.parseInt(st.nextToken());
+            r = Integer.parseInt(st.nextToken());
+            c = Integer.parseInt(st.nextToken());
+
+            if(l==0&&r==0&&c==0) {
+                break;
+            }
+
+            building = new char[l][r][c];
+            visited = new boolean[l][r][c];
+            for(int i=0;i<l;i++) {
+                for(int j=0;j<r+1;j++) {
+                    String s = br.readLine();
+                    if(s.equals("")) {
+                        continue;
+                    }
+                    building[i][j]=s.toCharArray();
+                }
+            }
+
+
+            for(int i=0;i<l;i++) {
+                for(int j=0;j<r;j++) {
+                    for(int k=0;k<c;k++) {
+                        if(building[i][j][k]=='S') {
+                        visited[i][j][k] = true; //넣을때 true로 바꾸어주자.
+                            queue.add(new Node(i,j,k,0));
+                            
+                        }
+                    }
+                }
+            }
+            
+            boolean check = false;
+            while(!queue.isEmpty()) {
+                Node n = queue.poll();
+            //    visited[n.x][n.y][n.z] = true; //이미 넣으면서 true로 바꾸어 주는데 또 true로 해줄필요는 없다.
+
+                if(building[n.x][n.y][n.z]=='E') { //이 부분에서 E로 못가는 경우를 생각해주어야합니다.
+                    if(n.canEscape>0) {
+                    	check = true;
+                        System.out.println("Escaped in "+n.canEscape+" minute(s).");
+                        break;
+                    }
+                }
+
+                for(int i=0;i<6;i++) {
+                    int newL = n.x + moveX[i];
+                    int newR = n.y + moveR[i];
+                    int newC = n.z + moveC[i];
+
+                    if(newL<0 || newL>=l || newR<0 || newR>=r || newC<0 || newC>=c) {
+                        continue;
+                    }
+
+                    if(building[newL][newR][newC]=='#') {
+                        continue;
+                    }
+
+                    if(visited[newL][newR][newC]) {
+                        continue;
+                    }
+
+                    if(building[newL][newR][newC]=='.'||building[newL][newR][newC]=='E') {
+                        visited[newL][newR][newC] = true;
+                        queue.add(new Node(newL, newR, newC, n.canEscape+1));
+                    }
+                }
+            }
+            if(!check) { //만약 도착지에 도달하지 못했다면? 이 추가가 되어야해
+            	System.out.println("Trapped!");
+            }
+        }
+    }
 }

@@ -9,12 +9,12 @@ class Solution {
 		String splitRecord[][] = new String[record.length][3];
 		for(int i = 0; i < record.length; i++) {
 			splitRecord[i] = record[i].split(" ");
-		}
-		for(int i = 0; i < record.length; i++) {
 			if(!splitRecord[i][0].equals("Leave")) {
-				nickUID.put(splitRecord[i][1], splitRecord[i][2]);				
+				nickUID.put(splitRecord[i][1], splitRecord[i][2]);
 			}
 		}
+	
+
 		for(int i = 0; i < record.length; i++) {
 			if(splitRecord[i][0].equals("Enter")) {
 				answer.add(nickUID.get(splitRecord[i][1]) + "님이 들어왔습니다.");

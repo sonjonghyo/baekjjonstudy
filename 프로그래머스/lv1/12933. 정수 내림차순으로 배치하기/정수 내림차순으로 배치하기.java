@@ -2,7 +2,7 @@ import java.util.*;
 
 class Solution {
     public long solution(long n) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         long answer = 0;
         long tmp[] = new long[(int) (Math.log10(n)+1)];
         int cnt = 0;
@@ -14,9 +14,9 @@ class Solution {
         int maxValue = -1;
         Arrays.sort(tmp);
         for(int i  = tmp.length-1 ; i >= 0; i--) {
-            result += tmp[i];
+            result.append(tmp[i]);
         }
-        answer = Long.parseLong(result);
+        answer = Long.parseLong(result.toString());
         return answer;
     }
 }

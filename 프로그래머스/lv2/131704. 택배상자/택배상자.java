@@ -3,32 +3,21 @@ import java.util.*;
 class Solution {
     public int solution(int[] order) {
         int answer = 0;
-        int turn = 0;
-        int cnt = order[turn];
+        int cnt = 0;
         Stack<Integer> stack = new Stack<>();
+        Queue<Integer> queue = new LinkedList<>();
         for(int i = 0; i < order.length; i++) {
-            if(cnt == i+1) {
-                turn++;
-                answer++;
-                if(turn < order.length) {
-                    cnt = order[turn];
-                }
-            }else {
-                stack.add(i+1);
-            }
-            while(!stack.isEmpty()) {
-                if(stack.peek() == cnt) {
-                    stack.pop();
-                    answer++;
-                    turn++;
-                 if(turn < order.length) {
-                        cnt = order[turn];
-                    }       
-                }else {
-                break;
-                }
-            }
+        	stack.add(i + 1);
+        	while(!stack.isEmpty()) {
+        		if(stack.peek() == order[cnt]) {
+        			queue.offer(stack.pop());
+        			cnt++;
+        		}else {
+        			break;
+        		}
+        	}
         }
+        answer = queue.size();
         return answer;
     }
 }

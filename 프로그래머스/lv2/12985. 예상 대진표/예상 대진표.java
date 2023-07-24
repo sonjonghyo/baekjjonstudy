@@ -1,0 +1,18 @@
+class Solution
+{
+    public int solution(int n, int a, int b)
+    {
+        int answer = 0;
+        while(true) {
+            a = a%2 == 1 ? a/2+1 : a/2;
+            b = b%2 == 1 ? b/2+1 : b/2;
+            if(a == b) {
+                answer++;
+                break;
+            }else {
+                answer++;
+            }
+        }
+        return answer;
+    }
+}

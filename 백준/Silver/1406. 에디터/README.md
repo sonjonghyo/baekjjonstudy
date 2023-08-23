@@ -8,7 +8,7 @@
 
 ### 분류
 
-자료 구조(data_structures), 연결 리스트(linked_list), 스택(stack)
+자료 구조, 연결 리스트, 스택
 
 ### 문제 설명
 

@@ -29,6 +29,7 @@ public class Main {
 				col[i] += map[j][i];
 			}
 		}
+		int tmp = 0;
 		for(int i = 0; i < N; i++) { //가로
 			for(int j = 0; j < M; j++) { //세로
 				for(int k = i + 1; k < N; k++) { //가로
@@ -36,7 +37,7 @@ public class Main {
 						//가로세로줄 누적합 되어있는거 우선 전부 더해주고?
 						//겹치는거 빼주자.
 						//마지막으로 길 4개에 둘러싸인 녹지의 개수를 더해주어야함.
-						int tmp = row[i] + col[j] + row[k] + col[l] - map[i][j] - map[i][l] - map[k][j] - map[k][l] + (k-i-1) * (l-j-1);
+						tmp = row[i] + col[j] + row[k] + col[l] - map[i][j] - map[i][l] - map[k][j] - map[k][l] + (k-i-1) * (l-j-1);
 						answer = Math.max(answer, tmp);
 					}
 				}

@@ -5,8 +5,8 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int K = Integer.parseInt(br.readLine());
 		int count = 0;
-		int answer = 0;
-		for(int i = 2; i <= 500000; i++) {
+		long answer = 0;
+		for(int i = 2; ; i++) {
 			if(check(i)) {
 				count++;
 			}

@@ -1,69 +1,63 @@
 class Solution {
     public String solution(String play_time, String adv_time, String[] logs) {
-        String answer = "";
-        StringBuilder sb = new StringBuilder();
-		//총 100시간(99시간59분59초)을 쓰므로 360,000칸의 배열이 필요하다.
-		int time[] = new int[360000];
+        //전체 플레이시간만큼 배열만들어주기.
+		int pt = changeTime(play_time);
+		int time[] = new int[pt + 2];
 		//우선 log의 시간대 별로 다 초로 변환하여 넣어주기.
 		for(int i = 0; i < logs.length; i++) {
 			//시작하는 시간
-			int st = ((logs[i].charAt(0) - 48) * 10 + logs[i].charAt(1) - 48) * 3600 + ((logs[i].charAt(3)-48) * 10 + logs[i].charAt(4)-48) * 60 + ((logs[i].charAt(6)-48) * 10 + logs[i].charAt(7)-48);
+			int st = changeTime(logs[i].split("-")[0]);
 			//끝나는 시간
-			int et = ((logs[i].charAt(9) - 48) * 10 + logs[i].charAt(10) - 48) * 3600 + ((logs[i].charAt(12)-48) * 10 + logs[i].charAt(13)-48) * 60 + ((logs[i].charAt(15)-48) * 10 + logs[i].charAt(16)-48);
-			//시작하는 시간과 끝나는 시간까지 time배열 1씩 증가시켜주기.
-			for(int a = st; a < et; a++) {
-				time[a]++;
-			}
+			int et = changeTime(logs[i].split("-")[1]);
+			//시작시간은 더해주고
+			time[st]++;
+			//종료시간은 빼주자
+			time[et]--;
+			//위처럼 하는 이유는 누적합을 하기 위해서.
 		}
-		long result = 0;
-		//time배열에서 adv_time구간동안 제일 높은 누적이 제일 크다.
-		//먼저 adv_time을 초로 변환해주자.
-		int adv = ((adv_time.charAt(0)-48) * 10 + adv_time.charAt(1)-48) * 3600 + ((adv_time.charAt(3)-48) * 10 + adv_time.charAt(4)-48) * 60 + ((adv_time.charAt(6)-48) * 10 + adv_time.charAt(7)-48);
-		//cnt를 주어 cnt == adv가 되었을때 그때부터 맨끝에거 증가하면 맨아래 감소하는 식으로 계산.
-		int cnt = 0;
-		//맨끝과 시작부분을 알려줄 변수 last와 start.
-		int last = 0;
-		int start = 0;
-		int tmpanswer = 0;
-		//누적으로 더해져있는 수를 알기 위한 sum 변수.
+		//누적합 해주기.
+		for(int i = 1; i <= pt; i++) {
+			time[i] += time[i-1];
+		}
+		int result = 0;
 		long sum = 0;
-		//time 배열의 길이만큼 for문을 돌려주자.
-		for(int i = 0; i < 360000; i++) {
-			//광고시간만큼 다 보고있다면?
-			if(cnt == adv) {
-                if(result < sum) {
-					result = sum;
-					tmpanswer = start;
-				}
-				//끝은 증가시키고 시작부분은 감소(슬라이딩 윈도우)
-				sum += time[last++];
-				sum -= time[start++];
-			}else {
-				cnt++;
-				sum += time[last++];
+		//먼저 adv_time을 초로 변환해주자.
+		int adv = changeTime(adv_time);
+		//먼저 광고시간까지 누적합 구해주고?
+		for(int i = 0; i < adv; i++) {
+			sum += time[i];
+		}
+		//광고시간 증가시키면서 비교하기.
+		int adt = adv;
+		//현재의 최대값을 누적된 합으로 저장시켜놓은 후
+		long max = sum;
+		//최대 전체상영시간 - 광고시간까지
+		for(int i = 0; i < pt - adv; i++) {
+			//누적합에 슬라이딩 윈도우식으로 계산.
+			sum += time[adt++] - time[i];
+			//최대값나오면 max에 저장
+			if(max < sum) {
+				max = sum;
+				//+1을 해준 이유는 내 현재시간이 아닌 다음 시간이 시작시간이므로 +1을 해준다.
+				result = i + 1;
 			}
-			//result가 sum보다 큰지 확인. 크면 result에 sum 저장.
+				
 		}
-        
-		int hour = tmpanswer / 3600 ;
-		int minute = (tmpanswer/60) % 60;
-		int second = tmpanswer % 60;
-		if(hour < 10) {
-			sb.append(0).append(hour).append(":");
-		}else {
-			sb.append(hour).append(":");
-		}
-		if(minute < 10) {
-			sb.append(0).append(minute).append(":");
-		}else {
-			sb.append(minute).append(":");
-		}
-		if(second < 10) {
-			sb.append(0).append(second);
-		}else {
-			sb.append(second);
-		}
-        answer = sb.toString();
-        return answer;
+        return returnTime(result);
     }
+    private static int changeTime(String str) {
+		//split으로 쪼개면 시간, 분, 초 3개가 나오니 그거 배열순으로 저장해서 return해주기.
+		int h = Integer.parseInt(str.split(":")[0]);
+		int m = Integer.parseInt(str.split(":")[1]);
+		int s = Integer.parseInt(str.split(":")[2]);
+		return h * 3600 + m * 60 + s;
+	}
+	
+	private static String returnTime(int time) {
+		String h = String.format("%02d", time / 3600);
+		time %= 3600;
+		String m = String.format("%02d", time / 60);
+		String s = String.format("%02d", time % 60);
+		return h + ":" + m + ":" + s;
+	}
 }

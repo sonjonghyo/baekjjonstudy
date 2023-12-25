@@ -1,38 +1,34 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		StringTokenizer st;
-		int tc = Integer.parseInt(br.readLine());
-		for (int i = 1; i <= tc; i++) {
-			Set<Integer> memo1 = new HashSet<>();
-			int su1 = Integer.parseInt(br.readLine());
+		StringBuilder sb = new StringBuilder();
+		int T = Integer.parseInt(br.readLine());
+		for(int tc = 1; tc <= T; tc++) {
+			HashMap<Integer,Integer> map = new HashMap<>();
+			int N = Integer.parseInt(br.readLine());;
 			st = new StringTokenizer(br.readLine());
-			for (int a = 0; a < su1; a++) {
-				int N = Integer.parseInt(st.nextToken());
-				memo1.add(N);
+			for(int i = 0 ; i < N; i++) {
+				int num = Integer.parseInt(st.nextToken());
+				map.put(num, map.getOrDefault(num, 0) + 1);
 			}
-			int su2 = Integer.parseInt(br.readLine());
+			int M = Integer.parseInt(br.readLine());
+			int note[] = new int[M];
 			st = new StringTokenizer(br.readLine());
-			for(int a=0; a<su2; a++) {
-				if(memo1.contains(Integer.parseInt(st.nextToken()))) {
-					bw.write('1' + "\n");
+			for(int i = 0; i < M; i++) {
+				note[i] = Integer.parseInt(st.nextToken());
+			}
+			for(int i = 0; i < M; i++) {
+				if(map.containsKey(note[i])) {
+					sb.append(1).append("\n");
 				}else {
-					bw.write('0' + "\n");
+					sb.append(0).append("\n");
 				}
-			}	
+			}
 		}
-		bw.flush();
-		br.close();
+		System.out.println(sb);
 	}
 }

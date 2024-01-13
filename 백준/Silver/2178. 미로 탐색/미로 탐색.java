@@ -1,25 +1,20 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	static int x,y;
 	static class Node {
-		int x;
-		int y;
-		public Node(int x, int y) {
-			this.x = x;
-			this.y = y;
+		int r;
+		int c;
+		public Node(int r, int c) {
+			this.r = r;
+			this.c = c;
 		}
 	}
-	static int map[][];
 	static int N, M;
-	static int cx, cy; //현재위치를 보여줌
+	static int map[][];
 	static boolean visited[][];
-	static int dy[] = {-1, 1, 0, 0};
-	static int dx[] = {0, 0, -1, 1};
+	static int drc[][] = {{-1,0}, {1,0}, {0,-1}, {0,1}};
+	static Queue<Node> q;
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
@@ -28,40 +23,40 @@ public class Main {
 		M = Integer.parseInt(st.nextToken());
 		map = new int[N][M];
 		visited = new boolean[N][M];
-		for(int i = 0; i<N; i++) {
-			String s = br.readLine();
-			for(int j = 0; j<M; j++) {
-				map[i][j] = s.charAt(j)-'0';
+		q = new LinkedList<>();
+		for(int i = 0; i < N; i++) {
+			String S = br.readLine();
+			for(int j = 0; j < M; j++) {
+				map[i][j] = S.charAt(j) - '0';
 			}
 		}
-		
-		BFS(0,0);
+		visited[0][0] = true;
+		q.add(new Node(0,0));
+		bfs();
 		System.out.println(map[N-1][M-1]);
+	}
+	private static void bfs() {
+		while(!q.isEmpty()) {
+			Node n = q.poll();
+			for(int d = 0; d < 4; d++) {
+				int nr = n.r + drc[d][0];
+				int nc = n.c + drc[d][1];
+				if(outofRange(nr,nc) && map[nr][nc] == 1 && !visited[nr][nc]) {
+					map[nr][nc] = map[n.r][n.c] + 1;
+					visited[nr][nc] = true;
+					q.add(new Node(nr,nc));
+				}
+				//끝까지 갔으면 더 볼필요없지.
+				if(nr == N-1 && nc == M-1)
+					return;
+			}
+		}
 		
 	}
-	public static void BFS(int x, int y) {
-		Queue<Node> q = new LinkedList<>();
-		q.add(new Node(x,y));
-		visited[y][x] = true;
-		
-		while(!q.isEmpty()) {
-			Node node = q.poll();
-			for(int d = 0; d<4; d++) {
-				cx = node.x + dx[d];
-				cy = node.y + dy[d];
-				
-				if(cx<0 || cx>=M || cy<0 || cy>=N)
-					continue;
-				if(!visited[cy][cx] && map[cy][cx] == 1) {
-					q.add(new Node(cx, cy));
-					visited[cy][cx] = true;
-					
-					map[cy][cx] = map[node.y][node.x] + 1;
-					if(visited[N-1][M-1] == true)
-						return;
-				}
-			}
-		}
-		
+	
+	private static boolean outofRange(int nr, int nc) {
+		if(nr >= 0 && nr < N && nc >= 0 && nc < M)
+			return true;
+		return false;
 	}
 }

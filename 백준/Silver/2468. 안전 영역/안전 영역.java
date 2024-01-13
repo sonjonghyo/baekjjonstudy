@@ -1,68 +1,57 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	//4방탐색
-	static int dx[] = {0,0,-1,1};
-	static int dy[] = {-1,1,0,0}; //상하좌우
-	static int area[][];
+	static int map[][];
 	static int N;
 	static boolean visited[][];
-	static int max = Integer.MIN_VALUE;
-	static int min = Integer.MAX_VALUE;
-	static int cnt = 0;
-	static int print[];
+	static int drc[][] = {{-1,0},{1,0},{0,-1},{0,1}};
+	static int answer = 0;
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
 		N = Integer.parseInt(br.readLine());
-		area = new int[N][N];
-		visited = new boolean[N][N];
-		
-		for(int i = 0; i<N; i++) {
+		map = new int[N][N];
+		int max = 0;
+		for(int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
-			for(int j = 0; j<N; j++) {
-				area[i][j] = Integer.parseInt(st.nextToken());
-				if(area[i][j] > max)
-					max = area[i][j];
-				if(area[i][j] < min)
-					min = area[i][j];
+			for(int j = 0; j < N; j++) {
+				map[i][j] = Integer.parseInt(st.nextToken());
+				if(max < map[i][j])
+					max = map[i][j];
 			}
 		}
-		print = new int[max+1];
-		if(min==max) {
-			min = max-1;
-		}
-		for(int a = min; a<max; a++) {
+		int cnt = 0;
+		for(int num = 0; num < max; num++) {
+			visited = new boolean[N][N];
 			cnt = 0;
-			for(int i = 0; i<N; i++) {
-				for(int j = 0; j<N; j++) {
-					if(area[i][j] > a && !visited[i][j]) {
+			for(int i = 0; i < N; i++) {
+				for(int j = 0; j < N; j++) {
+					if(map[i][j] > num && !visited[i][j]) {
+						dfs(i,j,num);
 						cnt++;
-						hownum(i,j,a);
 					}
 				}
 			}
-			print[a] = cnt;
-			for(boolean c[] : visited) {
-				Arrays.fill(c, false);				
+			if(cnt > answer)
+				answer = cnt;			
+		}
+		System.out.println(answer);
+	}
+	private static void dfs(int r, int c, int num) {
+		for(int d = 0; d < 4; d++) {
+			int nr = r + drc[d][0];
+			int nc = c + drc[d][1];
+			if(outofRange(nr,nc) && map[nr][nc] > num && !visited[nr][nc]) {
+				visited[nr][nc] = true;
+				dfs(nr,nc,num);
 			}
 		}
-		Arrays.sort(print);
-		System.out.println(print[print.length-1]);
+		
 	}
-	public static void hownum(int i, int j, int dept) {
-		visited[i][j] = true;
-		for(int d = 0; d<4; d++) {
-			int nx = i + dx[d];
-			int ny = j + dy[d];
-			
-			if(nx<0 || ny<0 || nx >=N || ny>=N) 
-				continue;
-			if(!visited[nx][ny] && area[nx][ny] > dept)
-				hownum(nx,ny,dept);
-		}
+	private static boolean outofRange(int nr, int nc) {
+		if(nr >= 0 && nr < N && nc >= 0 && nc < N)
+			return true;
+		return false;
 	}
 }

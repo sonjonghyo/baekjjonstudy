@@ -1,59 +1,78 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	static int W;
-	static int H;
-	static int sum[][];
-	static int[] dx = {0, 0, 1, -1, -1, 1, -1, 1};
-	static int[] dy = {1, -1, 0, 0, -1, 1, 1, -1}; //아래, 위, 오른쪽, 왼쪽, 왼쪽위, 오른쪽아래, 왼쪽아래, 오른쪽위 순서.
-	static int result;
+	static class Node {
+		int r;
+		int c;
+		public Node(int r, int c) {
+			this.r = r;
+			this.c = c;
+		}
+	}
+	static int drc[][] = {{-1,-1},{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1}};
+	static int land[][];
+	static int N,M;
+	static boolean visited[][];
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
 		StringBuilder sb = new StringBuilder();
 		while(true) {
-			result = 0; //섬의 개수 초기화.
 			st = new StringTokenizer(br.readLine());
-			W = Integer.parseInt(st.nextToken());
-			H = Integer.parseInt(st.nextToken());
-			if(W == 0 && H == 0)
+			M = Integer.parseInt(st.nextToken());
+			N = Integer.parseInt(st.nextToken());
+			//둘다 0일 경우 끝내기.
+			if(N == 0 && M == 0) {
 				break;
-			
-			sum = new int[H][W];
-			for(int i = 0; i<H; i++) {
+			}
+			//바다 지도
+			land = new int[N][M];
+			//방문처리 배열.
+			visited = new boolean[N][M];
+			for(int i = 0; i < N; i++) {
 				st = new StringTokenizer(br.readLine());
-				for(int j = 0; j<W; j++) {
-					sum[i][j] = Integer.parseInt(st.nextToken());
+				for(int j = 0; j < M; j++) {
+					land[i][j] = Integer.parseInt(st.nextToken());
 				}
 			}
-			
-			for(int i = 0; i<H; i++) {
-				for(int j = 0; j<W; j++) {
-					if(sum[i][j]==1) { 
-						howsum(i,j); //섬이 어떻게있는지 확인해주러감.
-						result++; //섬의 개수증가(어떻게가든 1개만 증가시키므로)
+			int cnt = 0;
+			for(int i = 0; i < N; i++) {
+				for(int j = 0; j < M; j++) {
+					//섬이고 아직 방문하지 않은 곳일 경우 bfs동작. 그러고 섬의 개수 추가.
+					if(land[i][j] == 1 && !visited[i][j]) {
+						bfs(i,j);
+						cnt++;
 					}
 				}
 			}
-			sb.append(result).append("\n");
+			//섬 추가.
+			sb.append(cnt).append("\n");
 		}
 		System.out.println(sb);
 	}
-	public static void howsum(int i, int j) { //8방탐색함.
-		sum[i][j] = 0; //이 구간은 섬을 봤으니 0으로 바꾸어준다.
-		
-		for(int s = 0; s<8; s++) {
-			int nx = i + dx[s];
-			int ny = j + dy[s];
-			
-			if(nx<0 || ny<0 || nx >=H || ny>=W) { //만약 위의 값이 범위안이라면?
-				continue;
+	private static void bfs(int i, int j) {
+		Queue<Node> q = new LinkedList<>();
+		visited[i][j] = true;
+		q.add((new Node(i, j)));
+		while(!q.isEmpty()) {
+			Node n = q.poll();
+			for(int d = 0; d < 8; d++) {
+				int nr = n.r + drc[d][0];
+				int nc = n.c + drc[d][1];
+				//바다 경계 내에 있으며 아직 방문하지 않았다면?
+				if(outofBounds(nr, nc) && !visited[nr][nc] && land[nr][nc] == 1) {
+					visited[nr][nc] = true;
+					q.add(new Node(nr,nc));
+				}
 			}
-			if(sum[nx][ny] == 1) //주변에 아직 확인안한섬이있다면?
-				howsum(nx,ny); //그쪽 섬으로 진출해서 다시 탐색.
-				
 		}
-	}	
+	}
+	
+	//바다 밖으로 나가는 것 체크해줄 함수입니다.
+	private static boolean outofBounds(int nr, int nc) {
+		if(nr >= 0 && nr < N && nc >= 0 && nc < M)
+			return true;
+		return false;
+	}
 }

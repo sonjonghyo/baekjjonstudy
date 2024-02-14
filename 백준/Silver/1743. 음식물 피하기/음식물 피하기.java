@@ -1,24 +1,26 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	static class Node { //음식물 쓰레기의 위치를 저장해줄 Node.
-		int r,c;
+	//BFS를 위한 Node(위치저장)
+	static class Node {
+		int r;
+		int c;
 		public Node(int r, int c) {
 			this.r = r;
 			this.c = c;
 		}
 	}
-	static int passage[][]; //통로를 2차원 배열로 설정.
-	static int N, M, K; //통로의 세로길이, 가로길이, 음식물쓰레기의 개수
-	static boolean visited[][]; //방문처리배열
-	static Queue<Node> foodWaste; //음식물 쓰레기를 담아줄 큐.
-	static int dr[] = {-1, 1, 0, 0};
-	static int dc[] = {0, 0, -1, 1};
-	static int sum, maxSum; //음식물쓰레기의 크기와 가장 큰 쓰레기의 크기.
+	//코레스코 콘도미니엄의 크기
+	static int space[][];
+	//상하좌우가 있는 배열
+	static int drc[][] = {{-1,0}, {1,0}, {0,-1}, {0,1}};
+	//방문 체크 배열
+	static boolean visited[][];
+	//세로길이, 가로길이, 음식물 쓰레기의 개수
+	static int N,M,K;
+	//가장 큰 음식물의 크기 저장.
+	static int answer = 0;
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
@@ -26,50 +28,62 @@ public class Main {
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
 		K = Integer.parseInt(st.nextToken());
-		passage = new int[N][M]; //통로 생성
-		visited = new boolean[N][M]; //방문배열 생성.
-		for(int i = 0; i < K; i++) { //음식물 쓰레기 위치지정.
+		space = new int[N][M];
+		visited = new boolean[N][M];
+		for(int i = 0; i < K; i++) {
+			//음식물 쓰레기의 위치 저장.
 			st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken()) - 1; //-1해주는 이유는 배열의 위치는 0부터 시작하므로.
-			int b = Integer.parseInt(st.nextToken()) - 1;
-			passage[a][b] = 1;
+			int r = Integer.parseInt(st.nextToken()) - 1;
+			int c = Integer.parseInt(st.nextToken()) - 1;
+			//음식물 쓰레기가 있는 공간은 -1로 저장하기.
+			space[r][c] = -1;
 		}
-		foodWaste = new LinkedList<>(); //큐 생성
+		
+		//전체 탐색하면서 음식물 쓰레기 찾기.
 		for(int i = 0; i < N; i++) {
-			for(int j = 0; j < M; j++) {
-				if(!visited[i][j] && passage[i][j] == 1) { //방문하지 않았고, 음식물 쓰레기가 있다면?
-					sum = 1;
-					checkSize(i,j); //음식물 쓰레기의 크기를 측정해주러 가기.
-				}
-				if(maxSum < sum) //만약 가장 큰것보다 방금구한 것이 더 크다면
-					maxSum = sum; //가장 큰것을 새로운 것으로 갱신해줍니다.
-			}
-		}
-		System.out.println(maxSum);
-		
-	}
-	private static void checkSize(int r, int c) {
-		foodWaste.add(new Node(r, c)); //큐에 담아줍니다.
-		visited[r][c] = true; //큐에 담을때 방문처리 체크해주고
-		while(!foodWaste.isEmpty()) { //큐가 비어있지 않을때 까지 while문 돌리기.
-			Node n = foodWaste.poll();
-			for(int d = 0; d < 4; d++) { //주위 사방탐색 진행
-				int nr = n.r + dr[d];
-				int nc = n.c + dc[d];
-				if(outOfRange(nr, nc)) { //범위 이내인지 체크해줍니다.
-					if(!visited[nr][nc] && passage[nr][nc] == 1) { //방문하지 않았으며 음식물 쓰레기가 있는 공간이라면?
-						foodWaste.add(new Node(nr,nc)); //음식물쓰레기 큐에 담아주고.
-						visited[nr][nc] = true; //방문처리를 해준다음에
-						sum++; //음식물 쓰레기의 크기를 증가시켜줍니다.
-					}
+			for(int j =0; j < M; j++) {
+				//음식물 쓰레기가 있으며 새로운 것이라면?(기존에 합쳐진것이 아니라면)
+				if(space[i][j] == -1 && !visited[i][j]) {
+					//BFS시작.
+					bfs(i,j);
 				}
 			}
-		
 		}
-		
+		System.out.println(answer);
 	}
-	
-	private static boolean outOfRange(int nr, int nc) { //범위 이내인지 확인해주는 함수.
-		return (nr >= 0 && nr < N && nc >= 0 && nc < M);
+	private static void bfs(int i, int j) {
+		//BFS를 위한 큐 생성.
+		Queue<Node> q = new LinkedList<>();
+		//큐에 현재 위치 넣기.
+		q.add(new Node(i, j));
+		//방문했다고 체크
+		visited[i][j] = true;
+		int cnt = 1;
+		//큐가 다 빌때까지.
+		while(!q.isEmpty()) {
+			Node n = q.poll();
+			//현재 위치에서 사방탐색으로 이어질 수 있는 음식물 쓰레기 찾기.
+			for(int d= 0 ; d < 4; d++) {
+				int nr = n.r + drc[d][0];
+				int nc = n.c + drc[d][1];
+				//먼저 맵 밖으로 나가는지 체크 후 음식물 쓰레기인지 확인, 체크한 음식물 쓰레기인지 확인.
+				if(outOfBounds(nr,nc) && space[nr][nc] == - 1 && !visited[nr][nc]) {
+					//큐에 새로 담아줌.(음식물 쓰레기 하나 늘었으니 크기 1 증가.
+					q.add(new Node(nr,nc));
+					//방문 처리 해주기
+					visited[nr][nc] = true;
+					//하나 찾을 때 마다 cnt 추가(음식물 쓰레기 크기 증가)
+					cnt++;
+				}
+			}
+		}
+		//음식물 쓰레기 크기 갱신해주는 IF문.
+		if(cnt > answer)
+			answer = cnt;
+	}
+	private static boolean outOfBounds(int nr, int nc) {
+		if(nr >= 0 && nr < N && nc >= 0 && nc < M)
+			return true;
+		return false;
 	}
 }
